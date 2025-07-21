@@ -120,33 +120,52 @@ function App() {
 
   const filterEvents = useCallback(() => {
     console.log('🔍 Filtering events. Total events:', events.length)
+    console.log('🔍 Filter criteria:', { searchQuery, selectedCategories, costRange, durationRange })
     let filtered = events
 
     // Search filter
     if (searchQuery) {
+      const beforeSearch = filtered.length
       filtered = filtered.filter(event =>
         event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
+      console.log(`🔍 After search filter: ${beforeSearch} → ${filtered.length}`)
     }
 
     // Category filter
     if (selectedCategories.length > 0) {
+      const beforeCategory = filtered.length
       filtered = filtered.filter(event =>
         selectedCategories.includes(event.category)
       )
+      console.log(`🔍 After category filter: ${beforeCategory} → ${filtered.length}`)
     }
 
     // Cost filter
-    filtered = filtered.filter(event =>
-      event.costPerPerson >= costRange[0] && event.costPerPerson <= costRange[1]
-    )
+    const beforeCost = filtered.length
+    filtered = filtered.filter(event => {
+      const cost = Number(event.costPerPerson)
+      const passes = cost >= costRange[0] && cost <= costRange[1]
+      if (!passes) {
+        console.log(`🔍 Cost filter rejected: ${event.name} (${cost}) not in range [${costRange[0]}-${costRange[1]}]`)
+      }
+      return passes
+    })
+    console.log(`🔍 After cost filter: ${beforeCost} → ${filtered.length}`)
 
     // Duration filter
-    filtered = filtered.filter(event =>
-      event.durationHours >= durationRange[0] && event.durationHours <= durationRange[1]
-    )
+    const beforeDuration = filtered.length
+    filtered = filtered.filter(event => {
+      const duration = Number(event.durationHours)
+      const passes = duration >= durationRange[0] && duration <= durationRange[1]
+      if (!passes) {
+        console.log(`🔍 Duration filter rejected: ${event.name} (${duration}h) not in range [${durationRange[0]}-${durationRange[1]}h]`)
+      }
+      return passes
+    })
+    console.log(`🔍 After duration filter: ${beforeDuration} → ${filtered.length}`)
 
     console.log('✅ Filtered events:', filtered.length)
     setFilteredEvents(filtered)
