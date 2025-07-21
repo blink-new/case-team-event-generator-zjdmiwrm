@@ -58,8 +58,8 @@ function App() {
   
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [costRange, setCostRange] = useState([0, 100])
-  const [durationRange, setDurationRange] = useState([0, 5])
+  const [costRange, setCostRange] = useState([0, 200])
+  const [durationRange, setDurationRange] = useState([0, 8])
 
   // Auth state management
   useEffect(() => {
@@ -79,7 +79,8 @@ function App() {
         orderBy: { name: 'asc' }
       })
       
-      console.log('📊 Raw events from database:', result)
+      console.log('📊 Raw events from database:', result.length, 'events')
+      console.log('📊 First event sample:', result[0])
       
       // Convert snake_case to camelCase
       const formattedEvents = result.map(event => ({
@@ -380,7 +381,7 @@ function App() {
                     <Slider
                       value={costRange}
                       onValueChange={setCostRange}
-                      max={100}
+                      max={200}
                       step={5}
                       className="mb-2"
                     />
@@ -396,7 +397,7 @@ function App() {
                     <Slider
                       value={durationRange}
                       onValueChange={setDurationRange}
-                      max={5}
+                      max={8}
                       step={0.5}
                       className="mb-2"
                     />
@@ -495,8 +496,8 @@ function App() {
               onClick={() => {
                 setSearchQuery('')
                 setSelectedCategories([])
-                setCostRange([0, 100])
-                setDurationRange([0, 5])
+                setCostRange([0, 200])
+                setDurationRange([0, 8])
               }}
             >
               Clear Filters
